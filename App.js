@@ -99,7 +99,12 @@ export default function App() {
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
           <Text
-            style={{ ...styles.btnText, color: working ? "white" : theme.grey }}
+            style={{
+              fontSize: 38,
+              fontWeight: "600",
+              color: "white",
+              color: working ? "white" : theme.grey,
+            }}
           >
             Work
           </Text>
@@ -107,7 +112,9 @@ export default function App() {
         <TouchableOpacity onPress={travel}>
           <Text
             style={{
-              ...styles.btnText,
+              fontSize: 38,
+              fontWeight: "600",
+              color: "white",
               color: !working ? "white" : theme.grey,
             }}
           >
