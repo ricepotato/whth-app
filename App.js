@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { theme } from "./colors";
@@ -63,18 +64,28 @@ export default function App() {
     setText("");
   };
   const deleteTodo = async (key) => {
-    Alert.alert("Delete To Do ?", "Are you sure?", [
-      { text: "Cancel" },
-      {
-        text: "OK",
-        onPress: async () => {
-          const newTodos = { ...toDos };
-          delete newTodos[key];
-          setTodos(newTodos);
-          await saveTodos(newTodos);
+    if (Platform.OS === "web") {
+      const ok = confirm("Do you want to delete this To do ?");
+      if (ok) {
+        const newTodos = { ...toDos };
+        delete newTodos[key];
+        setTodos(newTodos);
+        await saveTodos(newTodos);
+      }
+    } else {
+      Alert.alert("Delete To Do ?", "Are you sure?", [
+        { text: "Cancel" },
+        {
+          text: "OK",
+          onPress: async () => {
+            const newTodos = { ...toDos };
+            delete newTodos[key];
+            setTodos(newTodos);
+            await saveTodos(newTodos);
+          },
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   useEffect(() => {
