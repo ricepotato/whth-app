@@ -14,21 +14,43 @@ import { theme } from "./colors";
 import { Fontisto } from "@expo/vector-icons";
 
 const STORAGE_KEY = "@toDos";
+const MODE_KEY = "@toDoMode";
 
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
   const [toDos, setTodos] = useState({});
-  const travel = () => setWorking(false);
-  const work = () => setWorking(true);
+  const travel = async () => {
+    setWorking(false);
+    await AsyncStorage.setItem(MODE_KEY, JSON.stringify({ working: false }));
+  };
+  const work = async () => {
+    setWorking(true);
+    await AsyncStorage.setItem(MODE_KEY, JSON.stringify({ working: true }));
+  };
   const onChangeText = (payload) => setText(payload);
   const saveTodos = async (toSave) => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   };
   const loadToDos = async () => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
+    if (s === null) {
+      setTodos({});
+    } else {
+      try {
+        setTodos(JSON.parse(s));
+      } catch (e) {}
+    }
+  };
+  const loadMode = async () => {
+    const s = await AsyncStorage.getItem(MODE_KEY);
+    if (s === null) {
+      setWorking(true);
+      return;
+    }
     try {
-      setTodos(JSON.parse(s));
+      const mode = JSON.parse(s);
+      setWorking(mode.working);
     } catch (e) {}
   };
   const addTodo = async () => {
@@ -57,6 +79,7 @@ export default function App() {
 
   useEffect(() => {
     loadToDos();
+    loadMode();
   }, []);
 
   return (
